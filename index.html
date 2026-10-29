@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Texnet</title>
+  <title>Tutorial - Assinatura de Contrato Texnet</title>
   <style>
     * {
       margin: 0;
@@ -20,6 +20,8 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
+      position: relative;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     video {
@@ -30,15 +32,68 @@
       object-fit: contain;
       outline: none;
     }
+
+    #unmute-overlay {
+      position: absolute;
+      top: 24px;
+      background-color: rgba(0, 86, 210, 0.9);
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+      user-select: none;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Renomeie o arquivo do seu vídeo para "video.mp4" ou altere o src abaixo -->
-  <video controls playsinline preload="metadata">
+  <div id="unmute-overlay">🔊 Toque para ativar o som</div>
+
+  <video id="meuVideo" autoplay playsinline controls preload="auto">
     <source src="video.mp4" type="video/mp4">
     Seu navegador não suporta a reprodução deste vídeo.
   </video>
+
+  <script>
+    const video = document.getElementById('meuVideo');
+    const overlay = document.getElementById('unmute-overlay');
+
+    window.addEventListener('load', () => {
+      // 1. Tenta dar play direto com áudio
+      video.play().catch(() => {
+        // 2. Se o navegador bloquear, muta o vídeo e dá play automático
+        video.muted = true;
+        video.play();
+        overlay.style.display = 'flex';
+      });
+    });
+
+    // Ao tocar no aviso ou na tela, ativa o som e volta o vídeo para o início
+    function ativarSom() {
+      if (video.muted) {
+        video.muted = false;
+        video.currentTime = 0;
+        video.play();
+        overlay.style.display = 'none';
+      }
+    }
+
+    overlay.addEventListener('click', ativarSom);
+    document.body.addEventListener('click', ativarSom, { once: true });
+  </script>
 
 </body>
 </html>
