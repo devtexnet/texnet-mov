@@ -31,6 +31,7 @@
       max-height: 100dvh;
       object-fit: contain;
       outline: none;
+      background-color: #000; /* Evita fundo transparente fantasma */
     }
 
     #unmute-overlay {
@@ -62,7 +63,8 @@
 
   <div id="unmute-overlay">🔊 Toque para ativar o som</div>
 
-  <video id="meuVideo" autoplay playsinline controls preload="auto">
+  <!-- Adicionados atributos de compatibilidade para evitar tela preta em celulares -->
+  <video id="meuVideo" autoplay playsinline webkit-playsinline x5-playsinline controls preload="auto">
     <source src="video.mp4" type="video/mp4">
     Seu navegador não suporta a reprodução deste vídeo.
   </video>
@@ -72,16 +74,13 @@
     const overlay = document.getElementById('unmute-overlay');
 
     window.addEventListener('load', () => {
-      // 1. Tenta dar play direto com áudio
       video.play().catch(() => {
-        // 2. Se o navegador bloquear, muta o vídeo e dá play automático
         video.muted = true;
         video.play();
         overlay.style.display = 'flex';
       });
     });
 
-    // Ao tocar no aviso ou na tela, ativa o som e volta o vídeo para o início
     function ativarSom() {
       if (video.muted) {
         video.muted = false;
